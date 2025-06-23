@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask,render_template,request,redirect,flash,url_for,session
 
 
 def loadClubs():
@@ -48,19 +48,28 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-    points = int(club['points'])
-    if placesRequired <= points:
-        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-        club['points'] = int(club['points']) - placesRequired
-        if competition['numberOfPlaces'] < 0:
-            competition['numberOfPlaces'] = 0
-        flash('Great-booking complete!')
+    if competition['name'] in session:
+        places = {competition['name']: session[competition['name']] + placesRequired}
     else:
-        flash("You don't have enough points")
+        places = {competition['name']: placesRequired}
+    points = int(club['points'])
+    print("booked", places)
+    if placesRequired <= 12:
+        if places[competition['name']] <= 12:
+            if placesRequired <= points:
+                competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+                club['points'] = int(club['points']) - placesRequired
+                if not competition['name'] in session:
+                    session[competition['name']] = placesRequired
+                flash('Great-booking complete!')
+            else:
+                flash("You don't have enough points")
+        else:
+            flash(f"You already booked 12 places for {competition['name']}")
+    else:
+        flash("You can't book more than 12 places")
     return render_template('welcome.html', club=club,
                            competitions=competitions)
-
-
 
 # TODO: Add route for points display
 
@@ -68,3 +77,6 @@ def purchasePlaces():
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
+
+if (__name__ == "__main__"):
+    app.run(debug=True)
