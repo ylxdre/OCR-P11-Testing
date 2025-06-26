@@ -44,7 +44,7 @@ def book(competition,club):
             return render_template('booking.html',club=foundClub,competition=foundCompetition)
         else:
             flash("You cannot book for a past competition")
-            return render_template('welcome.html', club=club,
+            return render_template('welcome.html', club=foundClub,
                                    competitions=competitions, now=now)
     else:
         flash("Something went wrong-please try again")
@@ -61,12 +61,12 @@ def purchasePlaces():
     else:
         places = {competition['name']: placesRequired}
     points = int(club['points'])
-    print("booked", places)
     if placesRequired <= 12:
         if places[competition['name']] <= 12:
             if placesRequired <= points:
                 competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
                 club['points'] = int(club['points']) - placesRequired
+                print(club['points'])
                 if not competition['name'] in session:
                     session[competition['name']] = placesRequired
                 flash(f"Great ! {placesRequired} places booked for {competition['name']}")
