@@ -28,10 +28,9 @@ def index():
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
     club = [club for club in clubs if club['email'] == request.form['email']]
-    current_compet = [compet for compet in competitions if datetime.strptime(compet['date'], '%Y-%m-%d %H:%M:%S') > datetime.now()]
-    print(current_compet)
+    now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
     if club:
-        return render_template('welcome.html', club=club[0], competitions=current_compet)
+        return render_template('welcome.html', club=club[0], competitions=competitions, now=now)
     flash("The email isn't found")
     return redirect(url_for('index'))
 
@@ -39,8 +38,14 @@ def showSummary():
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
     if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        if competition['date'] > now:
+            return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        else:
+            flash("You cannot book for a past competition")
+            return render_template('welcome.html', club=club,
+                                   competitions=competitions)
     else:
         flash("Something went wrong-please try again")
         return render_template('welcome.html', club=club, competitions=competitions)
