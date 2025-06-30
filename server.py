@@ -58,7 +58,6 @@ def purchasePlaces():
         if places[competition['name']] <= 12:
             if placesRequired <= points:
                 competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-                club['points'] = int(club['points']) - placesRequired
                 if not competition['name'] in session:
                     session[competition['name']] = placesRequired
                 flash('Great-booking complete!')
