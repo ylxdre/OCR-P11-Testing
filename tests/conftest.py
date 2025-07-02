@@ -1,5 +1,7 @@
 import pytest
 from server import app
+from bs4 import BeautifulSoup
+
 
 EMAIL1 = "admin@irontemple.com"
 EMAIL2 = "john@simplylift.co"
@@ -12,6 +14,7 @@ def client():
 
 @pytest.fixture
 def connect(client):
-    response = client.post('/showSummary', data={"email": EMAIL})
+    response = client.post('/showSummary', data={"email": EMAIL1})
     soup = BeautifulSoup(response.data, 'html.parser')
+    return soup
 
