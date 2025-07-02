@@ -3,11 +3,9 @@ from flask import session
 
 
 def test_should_not_when_try_more_points_than_available(client):
-    data = {"competition": "Spring Festival", "club": "Iron Temple", "places": "5"}
-
-    # response = client.post('/book/Spring%20Festival/Iron%20Temple', data=data)
+    data = {"competition": "Spring Festival", "club": "Iron Temple", "places": "6"}
     response = client.post('/purchasePlaces', data=data)
-    # print(BeautifulSoup(response.data, "html.parser"))
-    print(session)
-    #assert "_flashes" in session
-    #assert session["_flashes"] == [("message", "You don't have enough points")]
+    soup = BeautifulSoup(response.data, "html.parser")
+    print(soup.li.text)
+    assert "You don't have enough points" == soup.li.text
+
