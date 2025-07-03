@@ -53,7 +53,6 @@ def purchasePlaces():
     else:
         places = {competition['name']: placesRequired}
     points = int(club['points'])
-    print("booked", places)
     if placesRequired <= 12:
         if places[competition['name']] <= 12:
             if placesRequired <= points:

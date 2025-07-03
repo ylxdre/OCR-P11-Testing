@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 EMAIL1 = "admin@irontemple.com"
 EMAIL2 = "john@simplylift.co"
 
+
 @pytest.fixture
 def club1():
     data = {"competition": "Spring Festival", "club": "Iron Temple"}
@@ -26,5 +27,4 @@ def connect(client):
     response = client.post('/showSummary', data={"email": EMAIL1})
     soup = BeautifulSoup(response.data, 'html.parser')
     return soup
-
 
