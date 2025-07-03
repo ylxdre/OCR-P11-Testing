@@ -29,7 +29,7 @@ def showSummary():
     club = [club for club in clubs if club['email'] == request.form['email']]
     if club:
         return render_template('welcome.html', club=club[0], competitions=competitions)
-    flash("The email isn't found")
+    flash("Sorry, that email wasn't found")
     return redirect(url_for('index'))
 
 @app.route('/book/<competition>/<club>')
@@ -53,11 +53,10 @@ def purchasePlaces():
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
         if competition['numberOfPlaces'] < 0:
             competition['numberOfPlaces'] = 0
-        flash('Great-booking complete!')
+        flash("Great-booking complete!")
     else:
         flash("You don't have enough points")
-    return render_template('welcome.html', club=club,
-                           competitions=competitions)
+    return render_template('welcome.html', club=club, competitions=competitions)
 
 
 
