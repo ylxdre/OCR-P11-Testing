@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 EMAIL1 = "admin@irontemple.com"
 EMAIL2 = "john@simplylift.co"
+
 @pytest.fixture
 def club1():
     data = {"competition": "Spring Festival", "club": "Iron Temple"}
