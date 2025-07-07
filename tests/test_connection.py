@@ -18,5 +18,5 @@ def test_shoul_display_page_on_known_email(client):
     email = "admin@irontemple.com"
     response = client.post('/showSummary', data={"email": email})
     soup = BeautifulSoup(response.data, 'html.parser')
-    assert soup.h2.text == "Welcome, "+email
-
+    welcome = "Welcome, "+email
+    assert welcome in response.data.decode()

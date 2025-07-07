@@ -21,7 +21,7 @@ class TestPoints:
 
 class TestPlaces:
 
-    def test_should_refuse_more_than_12_once(self, client, club1):
+    def test_should_refuse_more_12_once(self, client, club1):
         club1.update({"places": 13})
         response = client.post('/purchasePlaces', data=club1)
         soup = BeautifulSoup(response.data, "html.parser")
@@ -31,9 +31,21 @@ class TestPlaces:
         club1.update({"places": 2})
         response = client.post('/purchasePlaces', data=club1)
         soup = BeautifulSoup(response.data, "html.parser")
-        assert "Great ! 2 places booked for "+club1['competition'] == soup.li.text
+        assert "Great ! 2 places booked for "+club1['competition'] == soup.li.text 
         club1.update({"places": 12})
         response = client.post('/purchasePlaces', data=club1)
         soup = BeautifulSoup(response.data, "html.parser")
         assert "You already booked 12 places for "+club1['competition'] == soup.li.text
+
         
+class TestDate:
+
+    def test_should_not_display_book_link_for_past_competitions(self, connect):
+        li = connect.find_all("li")
+        assert not li[0].a
+        assert li[1].a
+
+    def test_forged_url_on_past_competition_should_raise_flash(self, client):
+        url = '/book/Spring Festival/Iron Temple'
+        response = client.get(url)
+        assert "You cannot book for a past competition" in response.data.decode()

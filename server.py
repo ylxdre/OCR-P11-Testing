@@ -1,5 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for,session
+from datetime import datetime
 
 
 def loadClubs():
@@ -19,6 +20,8 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
+
 
 @app.route('/')
 def index():
@@ -28,7 +31,7 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions, now=now)
     except IndexError:
         flash("Sorry, that email wasn't found")
         return redirect(url_for('index'))
@@ -38,10 +41,15 @@ def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        if foundCompetition['date'] > now:
+            return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        else:
+            flash("You cannot book for a past competition")
+            return render_template('welcome.html', club=foundClub,
+                                   competitions=competitions, now=now)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions, now=now)
 
 
 @app.route('/purchasePlaces',methods=['POST'])
@@ -68,7 +76,7 @@ def purchasePlaces():
     else:
         flash("You can't book more than 12 places")
     return render_template('welcome.html', club=club,
-                           competitions=competitions)
+                           competitions=competitions, now=now)
 
 # TODO: Add route for points display
 
