@@ -28,10 +28,7 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
-    # if club:
         return render_template('welcome.html', club=club, competitions=competitions)
-    # flash("Sorry, that email wasn't found")
-    # return redirect(url_for('index'))
     except IndexError:
         flash("Sorry, that email wasn't found")
         return redirect(url_for('index'))
@@ -52,9 +49,16 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
+    points = int(club['points'])
+    if placesRequired <= points:
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+        if competition['numberOfPlaces'] < 0:
+            competition['numberOfPlaces'] = 0
+        flash("Great-booking complete!")
+    else:
+        flash("You don't have enough points")
     return render_template('welcome.html', club=club, competitions=competitions)
+
 
 
 # TODO: Add route for points display
