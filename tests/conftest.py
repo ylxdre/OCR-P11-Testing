@@ -27,5 +27,3 @@ def connect(client):
     response = client.post('/showSummary', data={"email": EMAIL1})
     soup = BeautifulSoup(response.data, 'html.parser')
     return soup
-
-
