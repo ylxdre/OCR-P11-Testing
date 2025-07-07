@@ -31,7 +31,7 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions, now=now)
     except IndexError:
         flash("Sorry, that email wasn't found")
         return redirect(url_for('index'))
@@ -69,8 +69,6 @@ def purchasePlaces():
                 if not competition['name'] in session:
                     session[competition['name']] = placesRequired
                 flash(f"Great ! {placesRequired} places booked for {competition['name']}")
-                # flash('Great-booking complete!')
-
             else:
                 flash("You don't have enough points")
         else:
