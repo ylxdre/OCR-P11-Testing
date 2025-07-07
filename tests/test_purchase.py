@@ -21,8 +21,18 @@ class TestPoints:
 
 class TestPlaces:
 
-    def test_should_refuse_more_than_12(self, client, club1):
+    def test_should_refuse_more_than_12_once(self, client, club1):
         club1.update({"places": 13})
         response = client.post('/purchasePlaces', data=club1)
         soup = BeautifulSoup(response.data, "html.parser")
         assert "You can't book more than 12 places" == soup.li.text
+
+    def test_should_refuse_more_12_total(self, client, club1):
+        club1.update({"places": 2})
+        response = client.post('/purchasePlaces', data=club1)
+        soup = BeautifulSoup(response.data, "html.parser")
+        assert "Great ! 2 places booked for "+club1['competition'] == soup.li.text
+        club1.update({"places": 12})
+        response = client.post('/purchasePlaces', data=club1)
+        soup = BeautifulSoup(response.data, "html.parser")
+        assert "You already booked 12 places for "+club1['competition'] == soup.li.text
