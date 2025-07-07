@@ -46,3 +46,8 @@ class TestDate:
         assert not li[0].a
         assert li[1].a
 
+
+    def test_forged_url_on_past_competition_should_raise_flash(self, client):
+        url = '/book/Spring Festival/Iron Temple'
+        response = client.get(url)
+        assert "You cannot book for a past competition" in response.data.decode()
