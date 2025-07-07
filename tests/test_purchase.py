@@ -36,3 +36,4 @@ class TestPlaces:
         response = client.post('/purchasePlaces', data=club1)
         soup = BeautifulSoup(response.data, "html.parser")
         assert "You already booked 12 places for "+club1['competition'] == soup.li.text
+        
