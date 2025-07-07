@@ -16,7 +16,7 @@ class TestPoints:
         club1.update({"places": points-1})
         response = client.post('/purchasePlaces', data=club1)
         soup = BeautifulSoup(response.data, "html.parser")
-        assert "Great-booking complete!" == soup.li.text
+        assert f"Great ! "+str(points-1)+" places booked for "+club1['competition'] == soup.li.text
 
 
 class TestPlaces:
