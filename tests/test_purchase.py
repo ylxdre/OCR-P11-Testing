@@ -39,11 +39,10 @@ class TestPlaces:
         soup = BeautifulSoup(response.data, "html.parser")
         assert "You already booked 12 places for "+club1['competition'] == soup.li.text
 
-
 class TestDate:
 
     def test_should_not_display_book_link_for_past_competitions(self, connect):
         li = connect.find_all("li")
         assert not li[0].a
         assert li[1].a
-        
+
