@@ -10,10 +10,10 @@
     {% with messages = get_flashed_messages()%}
     {% if messages %}
         <ul>
-       {% for message in messages %}
+        {% for message in messages %}
             <li>{{message}}</li>
         {% endfor %}
-       </ul>
+        </ul>
     {% endif%}
     <b id="points">Points available: </b><span>{{club['points']}}</span>
     <h3>Competitions:</h3>
