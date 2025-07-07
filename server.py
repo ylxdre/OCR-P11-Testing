@@ -29,11 +29,12 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']]
-    if club:
-        return render_template('welcome.html', club=club[0], competitions=competitions, now=now)
-    flash("The email isn't found")
-    return redirect(url_for('index'))
+    try:
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        return render_template('welcome.html', club=club, competitions=competitions, now=now)
+    except IndexError:
+        flash("Sorry, that email wasn't found")
+        return redirect(url_for('index'))
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
@@ -66,7 +67,6 @@ def purchasePlaces():
             if placesRequired <= points:
                 competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
                 club['points'] = int(club['points']) - placesRequired
-                print(club['points'])
                 if not competition['name'] in session:
                     session[competition['name']] = placesRequired
                 flash(f"Great ! {placesRequired} places booked for {competition['name']}")
