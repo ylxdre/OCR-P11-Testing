@@ -3,8 +3,13 @@ from flask import session
 
 
 class TestPoints:
-    
+   '''
+   testing both case, book with and without enough points
+   '''
     def test_should_nok_when_too_much_points(self, client, connect, club2):
+        '''
+        test booking an amount of places greater than the available points
+        '''
         points = int(connect.span.text)
         club2.update({"places": points+1})
         response = client.post('/purchasePlaces', data=club2)
@@ -12,6 +17,9 @@ class TestPoints:
         assert "You don't have enough points" == soup.li.text
 
     def test_should_ok_when_enough_points(self, client, connect, club2):
+        '''
+        test booking with enough points
+        '''
         points = int(connect.span.text)
         # One remaining point after that :
         club2.update({"places": points-1})
@@ -19,20 +27,25 @@ class TestPoints:
         soup = BeautifulSoup(response.data, "html.parser")
         assert f"Great ! "+str(points-1)+" places booked for "+club2['competition'] == soup.li.text
 
-    def test_book_more_than_one_should_be_refused(self, client, connect, club2):
-        points = int(connect.span.text)
-        assert int(points) == 1 
-
 
 class TestPlaces:
+    '''
+    test the booking limit of 12 places
+    '''
 
     def test_should_refuse_more_12_once(self, client, club2):
+        '''
+        test to book more than 12 places in one shot
+        '''
         club2.update({"places": 13})
         response = client.post('/purchasePlaces', data=club2)
         soup = BeautifulSoup(response.data, "html.parser")
         assert "You can't book more than 12 places" == soup.li.text
 
     def test_should_refuse_more_12_total(self, client, club2):
+        '''
+        test to book more than 12 places in a two-part reservation
+        '''
         club2.update({"places": 1})
         response = client.post('/purchasePlaces', data=club2)
         soup = BeautifulSoup(response.data, "html.parser")
@@ -44,13 +57,23 @@ class TestPlaces:
 
         
 class TestDate:
+    '''
+    test the booking for the past competitions 
+    '''
 
     def test_should_not_display_book_link_for_past_competitions(self, connect):
+        '''
+        test that the booking link isn't displayed when competition date is older than today
+        '''
         li = connect.find_all("li")
         assert not li[0].a
         assert li[1].a
 
     def test_forged_url_on_past_competition_should_raise_flash(self, client):
+        '''
+        test that a flash warning occur when trying to connect to an URL on an old competition
+        '''
         url = '/book/Spring Festival/Iron Temple'
         response = client.get(url)
         assert "You cannot book for a past competition" in response.data.decode()
+

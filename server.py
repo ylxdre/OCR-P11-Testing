@@ -57,16 +57,20 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
+    # check if that's the first book, and update session
     if competition['name'] in session:
         places = {competition['name']: session[competition['name']] + placesRequired}
     else:
         places = {competition['name']: placesRequired}
     points = int(club['points'])
+    # prevent to book more than 12 places
     if placesRequired <= 12:
         if places[competition['name']] <= 12:
+            # prevent to book more than available points
             if placesRequired <= points:
                 competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
                 club['points'] = int(club['points']) - placesRequired
+                # set the session if that's the first book for this competition
                 if not competition['name'] in session:
                     session[competition['name']] = placesRequired
                 flash(f"Great ! {placesRequired} places booked for {competition['name']}")
@@ -86,5 +90,3 @@ def purchasePlaces():
 def logout():
     return redirect(url_for('index'))
 
-if (__name__ == "__main__"):
-    app.run(debug=True)
