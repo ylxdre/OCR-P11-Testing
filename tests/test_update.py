@@ -10,4 +10,3 @@ class TestPointsUpdate:
         club2.update({"places": points-1})
         response = client.post('/purchasePlaces', data=club2)
         assert f"Great ! {points-1} places booked for {club2['competition']}" in response.data.decode()
-        print(int(connect.span.text))
