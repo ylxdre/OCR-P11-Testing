@@ -3,9 +3,10 @@ from flask import session
 
 
 class TestPoints:
-   '''
-   testing both case, book with and without enough points
-   '''
+    '''
+    testing both case, book with and without enough points
+    '''
+
     def test_should_nok_when_too_much_points(self, client, connect, club2):
         '''
         test booking an amount of places greater than the available points
