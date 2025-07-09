@@ -29,11 +29,12 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']]
-    if club:
-        return render_template('welcome.html', club=club[0], competitions=competitions, now=now)
-    flash("The email isn't found")
-    return redirect(url_for('index'))
+    try:
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        return render_template('welcome.html', club=club, competitions=competitions, now=now)
+    except IndexError:
+        flash("Sorry, that email wasn't found")
+        return redirect(url_for('index'))
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
@@ -56,17 +57,20 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
+    # check if that's the first book, and update session
     if competition['name'] in session:
         places = {competition['name']: session[competition['name']] + placesRequired}
     else:
         places = {competition['name']: placesRequired}
     points = int(club['points'])
+    # prevent to book more than 12 places
     if placesRequired <= 12:
         if places[competition['name']] <= 12:
+            # prevent to book more than available points
             if placesRequired <= points:
                 competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
                 club['points'] = int(club['points']) - placesRequired
-                print(club['points'])
+                # set the session if that's the first book for this competition
                 if not competition['name'] in session:
                     session[competition['name']] = placesRequired
                 flash(f"Great ! {placesRequired} places booked for {competition['name']}")
@@ -88,5 +92,3 @@ def displayPoints():
 def logout():
     return redirect(url_for('index'))
 
-if (__name__ == "__main__"):
-    app.run(debug=True)
