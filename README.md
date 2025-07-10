@@ -43,9 +43,15 @@
     * clubs.json - list of clubs with relevant information. You can look here to see what email addresses the app will accept for login.
 
 5. Testing
+   - unit and integration tests : 
 
-    You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
+    All tests are made with Pytest, except <code>test_book_old.py</code> which uses Ward  
+    Run the tests by using : `pytest -s -v --cov=. --ignore=tests/test_book_old.py`  
+    You'll see the result, the list and the coverage rapport  
 
-    We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
-
+    you can also run `ward` from the root folder to see the two ward tests 
+   - performance tests :  
+   
+   run the app : `FLASK_APP=server.py flask run`  
+   then run `locust -f tests/performance_test/locustfile.py` from the root directory and connect with browser to ` 
+    http://0.0.0.0:8089` and launch tests from the web interface
