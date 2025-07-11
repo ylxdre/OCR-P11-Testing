@@ -45,8 +45,8 @@
 5. Testing
    - unit and integration tests : 
 
-    All tests are made with Pytest, except <code>test_book_old.py</code> which uses Ward  
-    Run the tests by using : `pytest -s -v --cov=. --ignore=tests/test_book_old.py`  
+    All tests are made with Pytest, except <code>test_ward_book_old.py</code> which uses Ward  
+    Run the tests by using : `pytest -s -v --cov=. --ignore=tests/test_ward_book_old.py`  
     You'll see the result, the list and the coverage rapport  
 
     you can also run `ward` from the root folder to see the two ward tests 
