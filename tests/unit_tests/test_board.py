@@ -18,7 +18,7 @@ class TestBoardDisplayPoints:
         list_club = loadClubs()
         response = client.get('/points')
         soup = BeautifulSoup(response.data, "html.parser")
-        li = soup.find_all("li")
-        assert len(li) == len(list_club)
+        tr = soup.find_all("tr")
+        assert len(tr) == len(list_club)
 
 
